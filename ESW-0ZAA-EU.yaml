@@ -3,14 +3,13 @@ blueprint:
   description: 4 ZigBee Wireless Switch automation
   domain: automation
   input:
-    switch_entity:
-      name: Switch
-      selector:
-        entity:
-          domain: sensor
-          integration: mqtt
-          multiple: false
-
+    mqtt_entity:
+      description: The "friendly" ESW-0ZAA-EU device name as is registered in zigbee2mqtt
+      name: Name
+    base_topic:
+      description: The base topic as defined in the zigbee2mqtt config
+      default: zigbee2mqtt
+      name: Base Topic
     btn_1_single:
       name: Button 1 | Single Press
       description: Action to run on button 1 (upper-left) single press
@@ -29,16 +28,9 @@ blueprint:
       default: []
       selector:
         action: {}
-
     btn_2_single:
       name: Button 2 | Single Press
       description: Action to run on button 2 (lower-right) single press
-      default: [ ]
-      selector:
-        action: { }
-    btn_2_hold:
-      name: Button 2 | Hold
-      description: Action to run on button 2 (upper-right) hold press
       default: []
       selector:
         action: {}
@@ -48,16 +40,15 @@ blueprint:
       default: []
       selector:
         action: {}
-
-    btn_3_single:
-      name: Button 3 | Single Press
-      description: Action to run on button 3 (lower-left) single press
+    btn_2_hold:
+      name: Button 2 | Hold
+      description: Action to run on button 2 (upper-right) hold press
       default: []
       selector:
         action: {}
-    btn_3_hold:
-      name: Button 3 | Hold
-      description: Action to run on button 3 (lower-left) hold press
+    btn_3_single:
+      name: Button 3 | Single Press
+      description: Action to run on button 3 (lower-left) single press
       default: []
       selector:
         action: {}
@@ -67,16 +58,15 @@ blueprint:
       default: []
       selector:
         action: {}
-
-    btn_4_single:
-      name: Button 4 | Single Press
-      description: Action to run on button 4 (lower-right) single press
+    btn_3_hold:
+      name: Button 3 | Hold
+      description: Action to run on button 3 (lower-left) hold press
       default: []
       selector:
         action: {}
-    btn_4_hold:
-      name: Button 4 | Long Press
-      description: Action to run on button 4 (lower-right) hold press
+    btn_4_single:
+      name: Button 4 | Single Press
+      description: Action to run on button 4 (lower-right) single press
       default: []
       selector:
         action: {}
@@ -86,17 +76,31 @@ blueprint:
       default: []
       selector:
         action: {}
+    btn_4_hold:
+      name: Button 4 | Long Press
+      description: Action to run on button 4 (lower-right) hold press
+      default: []
+      selector:
+        action: {}
 
 mode: single
 max_exceeded: silent
+
+trigger_variables:
+  mqtt_entity: !input mqtt_entity
+  base_topic:  !input base_topic
+
 trigger:
-  - platform: state
-    entity_id: !input "switch_entity"
-    attribute: action
+  - platform: mqtt
+    topic: "{{ base_topic  ~ '/' ~ mqtt_entity ~ '/action' }}"
+
 action:
   - variables:
-      command: "{{ trigger.to_state.state }}"
+      command:      "{{ trigger.payload }}"
   - choose:
+      - conditions:
+          - "{{ command == '1_single' }}"
+        sequence: !input "btn_1_single"
       - conditions:
           - '{{ command == "1_single" }}'
         sequence: !input "btn_1_single"
