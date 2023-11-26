@@ -1,0 +1,135 @@
+blueprint:
+  name: Zigbee2MQTT - ESW-0ZAA-EU
+  description: 4 ZigBee Wireless Switch automation
+  domain: automation
+  input:
+    switch_entity:
+      name: Switch
+      selector:
+        entity:
+          domain: sensor
+          integration: mqtt
+          multiple: false
+
+    btn_1_single:
+      name: Button 1 | Single Press
+      description: Action to run on button 1 (upper-left) single press
+      default: []
+      selector:
+        action: {}
+    btn_1_hold:
+      name: Button 1 | Hold
+      description: Action to run on button 1 (upper-left) HOLD press
+      default: []
+      selector:
+        action: {}
+    btn_1_double:
+      name: Button 1 | Double Press
+      description: Action to run on button 1 (upper-left) DOUBLE press
+      default: []
+      selector:
+        action: {}
+
+    btn_2_single:
+      name: Button 2 | Single Press
+      description: Action to run on button 2 (lower-right) single press
+      default: [ ]
+      selector:
+        action: { }
+    btn_2_hold:
+      name: Button 2 | Hold
+      description: Action to run on button 2 (upper-right) hold press
+      default: []
+      selector:
+        action: {}
+    btn_2_double:
+      name: Button 2 | Double Press
+      description: Action to run on button 2 (upper-right) double press
+      default: []
+      selector:
+        action: {}
+
+    btn_3_single:
+      name: Button 3 | Single Press
+      description: Action to run on button 3 (lower-left) single press
+      default: []
+      selector:
+        action: {}
+    btn_3_hold:
+      name: Button 3 | Hold
+      description: Action to run on button 3 (lower-left) hold press
+      default: []
+      selector:
+        action: {}
+    btn_3_double:
+      name: Button 3 | Double Press
+      description: Action to run on button 3 (lower-left) double press
+      default: []
+      selector:
+        action: {}
+
+    btn_4_single:
+      name: Button 4 | Single Press
+      description: Action to run on button 4 (lower-right) single press
+      default: []
+      selector:
+        action: {}
+    btn_4_hold:
+      name: Button 4 | Long Press
+      description: Action to run on button 4 (lower-right) hold press
+      default: []
+      selector:
+        action: {}
+    btn_4_double:
+      name: Button 4 | Double Press
+      description: Action to run on button 4 (lower-right) double press
+      default: []
+      selector:
+        action: {}
+
+mode: single
+max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input "switch_entity"
+    attribute: action
+action:
+  - variables:
+      command: "{{ trigger.to_state.state }}"
+  - choose:
+      - conditions:
+          - '{{ command == "1_single" }}'
+        sequence: !input "btn_1_single"
+      - conditions:
+          - '{{ command == "1_double" }}'
+        sequence: !input "btn_1_double"
+      - conditions:
+          - '{{ command == "1_hold" }}'
+        sequence: !input "btn_1_hold"
+      - conditions:
+          - '{{ command == "2_single" }}'
+        sequence: !input "btn_2_single"
+      - conditions:
+          - '{{ command == "2_double" }}'
+        sequence: !input "btn_2_double"
+      - conditions:
+          - '{{ command == "2_hold" }}'
+        sequence: !input "btn_2_hold"
+      - conditions:
+          - '{{ command == "3_single" }}'
+        sequence: !input "btn_3_single"
+      - conditions:
+          - '{{ command == "3_double" }}'
+        sequence: !input "btn_3_double"
+      - conditions:
+          - '{{ command == "3_hold" }}'
+        sequence: !input "btn_3_hold"
+      - conditions:
+          - '{{ command == "4_single" }}'
+        sequence: !input "btn_4_single"
+      - conditions:
+          - '{{ command == "4_double" }}'
+        sequence: !input "btn_4_double"
+      - conditions:
+          - '{{ command == "4_hold" }}'
+        sequence: !input "btn_4_hold"
