@@ -54,9 +54,15 @@ blueprint:
       default: []
       selector:
         action: {}
-    command_hue_stop:
+    command_hue_move:
       name: Command | Hold Press
       description: Action to run on hold press in command mode
+      default: []
+      selector:
+        action: {}
+    command_hue_stop:
+      name: Command | Hold Release
+      description: Action to run on hold release in command mode
       default: []
       selector:
         action: {}
@@ -109,7 +115,6 @@ trigger:
     topic: "{{ base_topic  ~ '/' ~ mqtt_entity ~ '/action' }}"
   - platform: state
     entity_id: !input "state_entity"
-    attribute: action'
 
 ###### https://manuals.plus/earda-technologies/ers-10tzbvk-aa-smart-knob-manual
 ### Event
@@ -150,6 +155,9 @@ action:
       - conditions:
           - "{{ platform == 'mqtt' and command == 'toggle' }}"
         sequence: !input "command_toggle"
+      - conditions:
+          - "{{ platform == 'mqtt' and command == 'hue_move' }}"
+        sequence: !input "command_hue_move"
       - conditions:
           - "{{ platform == 'mqtt' and command == 'hue_stop' }}"
         sequence: !input "command_hue_stop"
