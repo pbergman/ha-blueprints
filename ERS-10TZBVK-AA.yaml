@@ -134,7 +134,7 @@ trigger:
 
 action:
   - variables:
-      command:  "{{ trigger.platform ~ '_' ~ trigger.payload|default(trigger.to_state.state) }}"
+      command:  "{{ trigger.platform ~ '_' ~ (trigger.to_state.state|default(trigger.payload)) }}"
       
   - choose:
       - conditions:
