@@ -134,8 +134,7 @@ trigger:
 
 action:
   - variables:
-      ctx:          "{{ trigger }}"
-      state_entity: !input "state_entity"
+      ctx:  "{{ trigger }}"
 
   - choose:
       - conditions:
@@ -175,8 +174,8 @@ action:
           - "{{ ctx.platform == 'mqtt' and ctx.payload == 'color_temperature_step_up' }}"
         sequence: !input "command_color_temperature_step_up"
       - conditions:
-          - "{{ ctx.platform == 'state' and states(state_entity) == 'command') }}"
+          - "{{ ctx.platform == 'state' and is_state(ctx.entity_id, 'command') }}"
         sequence: !input "switch_operation_mode_command"
       - conditions:
-          - "{{ ctx.platform == 'state' and is_state(state_entity) == 'event') }}"
+          - "{{ ctx.platform == 'state' and is_state(ctx.entity_id, 'event') }}"
         sequence: !input "switch_operation_mode_event"
