@@ -85,7 +85,7 @@ blueprint:
       selector:
         action: {}
     command_color_temperature_step_up:
-      name: Command | Toggle
+      name: Command | Color Temperature Down
       description: Action to run on right rotate + press in command mode
       default: []
       selector:
