@@ -134,42 +134,48 @@ trigger:
 
 action:
   - variables:
-      command:  "{{ trigger.payload }}"
-      platform: "{{ trigger.platform }}"
+      command:  "{{ trigger.platform ~ '_' ~ trigger.payload|default(trigger.to_state.state) }}"
+      
   - choose:
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'single' }}"
+          - "{{ command == 'mqtt_single' }}"
         sequence: !input "event_single"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'double' }}"
+          - "{{ command == 'mqtt_double' }}"
         sequence: !input "event_double"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'hold' }}"
+          - "{{ command == 'mqtt_hold' }}"
         sequence: !input "event_hold"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'rotate_left' }}"
+          - "{{ command == 'mqtt_rotate_left' }}"
         sequence: !input "event_rotate_left"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'rotate_right' }}"
+          - "{{ command == 'mqtt_rotate_right' }}"
         sequence: !input "event_rotate_right"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'toggle' }}"
+          - "{{ command == 'mqtt_toggle' }}"
         sequence: !input "command_toggle"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'hue_move' }}"
+          - "{{ command == 'mqtt_hue_move' }}"
         sequence: !input "command_hue_move"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'hue_stop' }}"
+          - "{{ command == 'mqtt_hue_stop' }}"
         sequence: !input "command_hue_stop"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'brightness_step_down' }}"
+          - "{{ command == 'mqtt_brightness_step_down' }}"
         sequence: !input "command_brightness_step_down"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'brightness_step_up' }}"
+          - "{{ command == 'mqtt_brightness_step_up' }}"
         sequence: !input "command_brightness_step_up"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'color_temperature_step_down' }}"
+          - "{{ command == 'mqtt_color_temperature_step_down' }}"
         sequence: !input "command_color_temperature_step_down"
       - conditions:
-          - "{{ platform == 'mqtt' and command == 'color_temperature_step_up' }}"
+          - "{{ command == 'mqtt_color_temperature_step_up' }}"
         sequence: !input "command_color_temperature_step_up"
+      - conditions:
+          - "{{ command == 'state_command' }}"
+        sequence: !input "switch_operation_mode_command"
+      - conditions:
+          - "{{ command == 'state_event' }}"
+        sequence: !input "switch_operation_mode_event"
