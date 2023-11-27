@@ -14,7 +14,7 @@ blueprint:
       name: State
       selector:
         entity:
-          domain: sensor
+          domain: select
           integration: mqtt
           multiple: false
 
