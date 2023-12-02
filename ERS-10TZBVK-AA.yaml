@@ -103,7 +103,7 @@ blueprint:
       selector:
         action: {}
 
-mode: single
+mode: queued
 max_exceeded: silent
 
 trigger_variables:
