@@ -17,10 +17,11 @@ blueprint:
         entity:
           domain: schedule
           multiple: false
-    entity_notify:
-      name: Device to notify
-      description: "Device to receive state change update (like: notify.notify or notify.mobile_app_iphone)"
-      default: ""
+    extra_actions:
+      name: Actions to fire when state occurred
+      default: []
+      selector:
+        action: { }
 
 mode: single
 max_exceeded: silent
@@ -36,7 +37,6 @@ trigger:
 action:
   - variables:
       entity_schedule: !input "entity_schedule"
-      entity_notify: !input "entity_notify"
       payload: "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ states(entity_schedule) }}{% endif %}"
   - if:
       - condition: template
@@ -49,10 +49,4 @@ action:
       - service: switch.turn_off
         target:
           entity_id: !input "entity_switch"
-  - if:
-      - condition: template
-        value_template: "{{ entity_notify != '' }}"
-    then:
-      - service:  !input "entity_notify"
-        data_template:
-          message: "{{ entity_schedule }} state changed to {{ payload }}"
+  - sequence: !input "extra_actions"
