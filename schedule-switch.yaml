@@ -46,13 +46,7 @@ action:
         {% else %}
           {{ states(entity_schedule) }}
         {% endif %}
-  - alias: "turn on/off switch"
-    service: >
-      {% payload == "on" %}
-        switch.turn_on
-      {% else %}
-        switch.turn_off
-      {% endif %}
+  - service: "{% payload == 'on' %}switch.turn_on{% else %}switch.turn_off{% endif %}"
     target:
       entity_id: !input entity_switch
 #  - if:
