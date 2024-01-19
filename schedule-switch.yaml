@@ -1,0 +1,53 @@
+blueprint:
+  name: Schedule Switch
+  description: Turn a switch on/of based a helper schedule changed state
+  domain: automation
+  input:
+    entity_switch:
+      name: Switch
+      description: Switch to turn on/off based on schedule state
+      selector:
+        entity:
+          domain: switch
+          multiple: false
+    entity_schedule:
+      name: Schedule
+      description: Schedule to listen for state triggers
+      selector:
+        entity:
+          domain: schedule
+          multiple: false
+    entity_notify:
+      name: Notify
+      description: To send notification on change
+      default: ""
+      selector:
+        entity:
+          domain: notify
+          multiple: false
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input "entity_schedule"
+    to: 'on'
+  - platform: state
+    entity_id: !input "entity_schedule"
+    to: 'off'
+
+action:
+  - variables:
+      entity_schedule: !input "entity_schedule"
+      entity_notify: !input "entity_notify"
+      payload: "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ states(entity_schedule) }}{% endif %}"
+  - service: "{% if payload == 'on' %}switch.turn_on{% else %}switch.turn_off{% endif %}"
+    target: !input "entity_switch"
+  - if:
+      - condition: template
+        value_template: "{{ entity_notify != '' }}"
+    then:
+      - service: notify.mobile_app_asus_i006d
+        data_template:
+          message: '{{ entity_schedule }} changed state to {{ payload }}'
