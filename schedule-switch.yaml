@@ -59,5 +59,4 @@ action:
       - domain: mobile_app
         type: notify
         device_id: !input notify_device
-        data_template:
-            message: "{{ entity_schedule }} state changed to {{ payload }}"
+        message: "{{ entity_schedule }} state changed to {{ payload }}"
