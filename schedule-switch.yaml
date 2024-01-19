@@ -17,7 +17,7 @@ blueprint:
         entity:
           domain: schedule
           multiple: false
-    entity_notify:
+    notify_device:
       name: Device to notify
       description: Device to receive state change update
       default: ""
@@ -54,7 +54,7 @@ action:
           entity_id: !input "entity_switch"
   - if:
       - condition: template
-        value_template: "{{ entity_notify != '' }}"
+        value_template: "{{ notify_device != '' }}"
     then:
       - domain: mobile_app
         type: notify
