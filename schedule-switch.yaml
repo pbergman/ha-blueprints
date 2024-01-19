@@ -46,13 +46,15 @@ action:
         {% else %}
           {{ states(entity_schedule) }}
         {% endif %}
-  - service: >
+  - alias: "turn on/off switch"
+    service: >
       {% payload == "on" %}
-        light.turn_on
+        switch.turn_on
       {% else %}
-        light.turn_off
+        switch.turn_off
       {% endif %}
-    target: !input target_light
+    target:
+      entity_id: !input entity_switch
 #  - if:
 #      - condition: template
 #        value_template: "{{ entity_notify != '' }}"
