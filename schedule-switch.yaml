@@ -39,7 +39,7 @@ trigger:
 action:
   - variables:
       entity_schedule: !input "entity_schedule"
-      entity_notify: !input "entity_notify"
+      notify_device: !input "notify_device"
       payload: "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ states(entity_schedule) }}{% endif %}"
   - if:
       - condition: template
@@ -56,6 +56,9 @@ action:
       - condition: template
         value_template: "{{ entity_notify != '' }}"
     then:
-        - service: !input "entity_notify"
-          data_template:
+      - domain: mobile_app
+        type: notify
+        device_id: !input notify_device
+        title: !input title
+        data_template:
             message: "{{ entity_schedule }} state changed to {{ payload }}"
