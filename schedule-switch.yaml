@@ -49,4 +49,5 @@ action:
       - service: switch.turn_off
         target:
           entity_id: !input "entity_switch"
-  - sequence: !input "extra_actions"
+  - choose: [ ]
+    default: !input extra_actions
