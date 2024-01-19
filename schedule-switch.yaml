@@ -37,23 +37,21 @@ trigger:
     to: 'off'
 
 action:
-  - service: >
-      {% if trigger.to_state.state == "on" %}
-        light.turn_on
-      {% else %}
-        light.turn_off
-      {% endif %}
-    target: !input entity_switch
-
-#  - variables:
-#      entity_schedule: !input "entity_schedule"
-#      entity_notify: !input "entity_notify"
-#      payload: >
-#        {% if trigger.to_state|default(false,true) %}
-#          {{ trigger.to_state.state }}
-#        {% else %}
-#          {{ states(entity_schedule) }}
-#        {% endif %}
+  - variables:
+      entity_schedule: !input "entity_schedule"
+      entity_notify: !input "entity_notify"
+      payload: "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ states(entity_schedule) }}{% endif %}"
+  - if:
+      - condition: template
+        value_template: "{{ trigger.to_state.state == 'on' }}"
+    then:
+      - service: switch.turn_on
+        target:
+          entity_id: !input "entity_switch"
+    else:
+      - service: switch.turn_off
+        target:
+          entity_id: !input "entity_switch"
 #  - service: "{% payload == 'on' %}switch.turn_on{% else %}switch.turn_off{% endif %}"
 #    target:
 #      entity_id: !input entity_switch
