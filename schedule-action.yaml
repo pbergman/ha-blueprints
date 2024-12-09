@@ -12,14 +12,14 @@ blueprint:
           multiple: false
 
     entity_switch_on:
-      name: on
+      name: On Actions
       description: Actions to run when schedule is changed to on
       default: []
       selector:
         action: { }
 
     entity_switch_off:
-      name: off
+      name: Off Actions
       description: Actions to run when schedule is changed to off
       default: []
       selector:
