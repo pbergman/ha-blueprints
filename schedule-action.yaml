@@ -1,0 +1,49 @@
+blueprint:
+  name: Schedule Action
+  description: Call actions based on schedule change state
+  domain: automation
+  input:
+    entity_schedule:
+      name: Schedule
+      description: Schedule to listen for state triggers
+      selector:
+        entity:
+          domain: schedule
+          multiple: false
+
+    entity_switch_on:
+      name: on
+      description: Actions to run when schedule is changed to on
+      default: []
+      selector:
+        action: { }
+
+    entity_switch_off:
+      name: off
+      description: Actions to run when schedule is changed to off
+      default: []
+      selector:
+        action: { }
+
+mode: single
+max_exceeded: silent
+
+trigger:
+  - platform: state
+    entity_id: !input "entity_schedule"
+    to: 'on'
+  - platform: state
+    entity_id: !input "entity_schedule"
+    to: 'off'
+
+action:
+  - variables:
+      entity_schedule: !input "entity_schedule"
+      payload: "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ states(entity_schedule) }}{% endif %}"
+  - if:
+      - condition: template
+        value_template: "{{ payload == 'on' }}"
+    then:
+      - sequence: !input "entity_switch_on"
+    else:
+      - sequence: !input "entity_switch_off"
