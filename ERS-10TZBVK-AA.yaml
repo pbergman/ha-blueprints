@@ -104,6 +104,7 @@ blueprint:
         action: {}
 
 mode: queued
+max: 50
 max_exceeded: silent
 
 trigger_variables:
@@ -135,7 +136,7 @@ trigger:
 action:
   - variables:
       platform: "{{ trigger.platform }}"
-      payload:  "{% if trigger.to_state|default(false,true) %}{{ trigger.to_state.state }}{% else %}{{ trigger.payload }}{% endif %}"
+      payload:  "{{ trigger.to_state.state if trigger.to_state|default(false,true) else trigger.payload }}"
   - choose:
       - conditions:
           - "{{ platform == 'mqtt' and payload == 'single' }}"
